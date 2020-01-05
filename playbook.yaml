@@ -1,0 +1,39 @@
+---
+- import_playbook: /playbook-pieces/setup-basic-dev.yaml
+- import_playbook: /playbook-pieces/setup-node.yaml
+- import_playbook: /playbook-pieces/setup-docker.yaml
+- import_playbook: /playbook-pieces/env-git-config.yaml
+- import_playbook: /playbook-pieces/env-gitlab-access.yaml
+- import_playbook: /playbook-pieces/env-alphassl-cert.yml
+- hosts: all
+  tasks:
+  - name: install gulp 
+    npm:
+      name: gulp-cli
+      global: yes
+      state: present
+    become: yes
+    become_method: sudo
+
+  - name: add user to the docker group
+    become: true
+    become_method: sudo
+    user:
+      name: vagrant
+      append: true
+      groups: docker
+
+  - name: install awscli
+    become: true
+    become_method: sudo
+    pip:
+      name: awscli
+      state: present
+
+  - name: install serverless
+    become: true
+    become_method: sudo
+    npm:
+      name: serverless
+      state: present
+      global: yes
